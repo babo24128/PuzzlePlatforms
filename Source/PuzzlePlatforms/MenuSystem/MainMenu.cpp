@@ -5,6 +5,10 @@
 
 #include "Components/Button.h"
 
+
+
+
+
 bool UMainMenu::Initialize()
 {
     bool Success = Super::Initialize();
@@ -14,6 +18,11 @@ bool UMainMenu::Initialize()
     Host->OnClicked.AddDynamic(this, &UMainMenu::HostServer);
     
     return true;
+}
+
+void UMainMenu::SetMenuInterface(IMenuInterface* InMenuInterface)
+{
+    MenuInterface = InMenuInterface;
 }
 
 void UMainMenu::HostServer()
