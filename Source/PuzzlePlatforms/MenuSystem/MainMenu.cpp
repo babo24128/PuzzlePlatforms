@@ -8,6 +8,7 @@
 #include "Components/Button.h"
 #include "Components/WidgetSwitcher.h"
 #include "Components/EditableTextBox.h"
+#include "Components/TextBlock.h"
 
 #include "ServerRow.h"
 
@@ -47,6 +48,8 @@ bool UMainMenu::Initialize()
 }
 
 
+
+
 void UMainMenu::HostServer()
 {
     if (MenuInterface != nullptr)
@@ -55,20 +58,33 @@ void UMainMenu::HostServer()
    }
 }
 
+void UMainMenu::SetServerList(TArray<FString> ServerNames)
+{
+    UWorld* World = this->GetWorld();
+    if (!ensure(World != nullptr)) return;
+
+    ServerList->ClearChildren();
+
+    for (const FString& ServerName : ServerNames)
+    {
+        UServerRow* Row = CreateWidget<UServerRow>(World, ServerRowClass);
+        if (!ensure(Row != nullptr)) return;
+
+        Row->ServerName->SetText(FText::FromString(ServerName));
+
+        ServerList->AddChild(Row);
+    }
+   
+}
+
 void UMainMenu::JoinServer()
 {
     if (MenuInterface != nullptr)
     {
-    /*    if (!ensure(ServerList != nullptr)) return;
-        const FString& Address = ServerList->GetText().ToString();
-        MenuInterface->Join(Address);*/
-        UWorld* World = this->GetWorld();
-        if (!ensure(World != nullptr)) return;
-
-        UServerRow* Row = CreateWidget<UServerRow>(World, ServerRowClass);
-        if (!ensure(Row != nullptr)) return;
-
-        ServerList->AddChild(Row);
+      /*if (!ensure(IPAddressField != nullptr)) return;
+        const FString& Address = IPAddressField->GetText().ToString();*/
+        MenuInterface->Join("");
+        
     }
 
 }
@@ -78,6 +94,10 @@ void UMainMenu::OpenJoinMenu()
     if (!ensure(MenuSwitcher != nullptr)) return;
     if (!ensure(JoinMenu != nullptr)) return;
     MenuSwitcher->SetActiveWidget(JoinMenu);
+    if (MenuInterface != nullptr)
+    {
+        MenuInterface->RefreshServerList();
+    }
 }
 
 void UMainMenu::OpenMainMenu()
@@ -85,6 +105,7 @@ void UMainMenu::OpenMainMenu()
     if (!ensure(MenuSwitcher != nullptr)) return;
     if (!ensure(MainMenu != nullptr)) return;
     MenuSwitcher->SetActiveWidget(MainMenu);
+
 }
 
 void UMainMenu::QuitPressed()
