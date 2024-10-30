@@ -119,11 +119,12 @@ void UPuzzlePlatformsGameInstance::CreateSession()
 			SessionSettings.bIsLANMatch = false;
 		}
 
-		SessionSettings.NumPrivateConnections = 2;
+		SessionSettings.NumPrivateConnections = 5;
 		SessionSettings.bShouldAdvertise = true;
 		SessionSettings.bUsesPresence = true;
-		SessionSettings.bUseLobbiesIfAvailable = true;
+		//SessionSettings.bUseLobbiesIfAvailable = true;
 		SessionSettings.Set(SERVER_NAME_SETTINGS_KEY, DesiredServerName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+
 		SessionInterface->CreateSession(0, SESSION_NAME, SessionSettings);
 	}
 	
@@ -213,6 +214,8 @@ void UPuzzlePlatformsGameInstance::Join(uint32 Index)
 
 }
 
+
+
 void UPuzzlePlatformsGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
 {
 	if (!SessionInterface.IsValid()) return;
@@ -233,6 +236,14 @@ void UPuzzlePlatformsGameInstance::OnJoinSessionComplete(FName SessionName, EOnJ
 	if (!ensure(PlayerController != nullptr)) return;
 
 	PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
+}
+
+void UPuzzlePlatformsGameInstance::StartSession()
+{
+	if (SessionInterface.IsValid())
+	{
+		SessionInterface->StartSession(SESSION_NAME);
+	}
 }
 
 void UPuzzlePlatformsGameInstance::LoadMainMenu()
